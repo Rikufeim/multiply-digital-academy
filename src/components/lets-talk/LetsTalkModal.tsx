@@ -84,13 +84,12 @@ export default function LetsTalkModal({ isOpen, onClose }: LetsTalkModalProps) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 overflow-y-auto"
+            className="fixed inset-0 z-50 flex items-center justify-center p-6"
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
           >
-            <div className="min-h-full flex items-start justify-center p-6 pt-20">
-              <div className="relative w-full max-w-2xl bg-black border-2 border-border rounded-base p-8">
+            <div className="relative w-full max-w-2xl bg-black border-2 border-border rounded-base p-8 max-h-[90vh] overflow-y-auto scrollbar-hide">
                 {/* Close button */}
                 <Button
                   variant="ghost"
@@ -116,7 +115,6 @@ export default function LetsTalkModal({ isOpen, onClose }: LetsTalkModalProps) {
                   )}
                 </div>
               </div>
-            </div>
           </motion.div>
         </>
       )}
