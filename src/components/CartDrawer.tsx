@@ -1,12 +1,44 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
+import { X, Minus, Plus, Trash2, ShoppingBag, ExternalLink, Loader2 } from "lucide-react";
+import { useCartStore } from "@/stores/cartStore";
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
 
 export default function CartDrawer() {
-  const { items, isOpen, closeCart, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
+  const { 
+    items, 
+    isOpen, 
+    isLoading,
+    isSyncing,
+    closeCart, 
+    removeItem, 
+    updateQuantity,
+    clearCart,
+    getCheckoutUrl,
+    syncCart,
+    totalItems,
+    totalPrice
+  } = useCartStore();
 
-  const formatPrice = (price: number) => `$${price.toFixed(2)}`;
+  // Sync cart when drawer opens
+  useEffect(() => {
+    if (isOpen) syncCart();
+  }, [isOpen, syncCart]);
+
+  const formatPrice = (amount: string, currencyCode: string) => 
+    `${currencyCode} ${parseFloat(amount).toFixed(2)}`;
+
+  const handleCheckout = () => {
+    const checkoutUrl = getCheckoutUrl();
+    if (checkoutUrl) {
+      window.open(checkoutUrl, '_blank');
+      closeCart();
+    }
+  };
+
+  const itemCount = totalItems();
+  const total = totalPrice();
+  const currencyCode = items[0]?.price.currencyCode || 'EUR';
 
   return (
     <AnimatePresence>
@@ -35,7 +67,7 @@ export default function CartDrawer() {
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-border">
                 <h2 className="font-display text-xl font-bold uppercase tracking-[0.2em]">
-                  Your Cart
+                  Your Cart ({itemCount})
                 </h2>
                 <Button
                   variant="ghost"
@@ -54,27 +86,40 @@ export default function CartDrawer() {
                     <ShoppingBag className="w-16 h-16 text-muted-foreground mb-4" />
                     <p className="text-muted-foreground text-lg mb-2">Your cart is empty</p>
                     <p className="text-muted-foreground text-sm">
-                      Add some courses or products to get started
+                      Add some products to get started
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-4">
                     {items.map((item) => (
                       <motion.div
-                        key={item.product.id}
+                        key={item.variantId}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         className="flex gap-4 p-4 bg-secondary/50 rounded-lg"
                       >
+                        {/* Product image */}
+                        {item.product.node.images?.edges?.[0]?.node && (
+                          <div className="w-16 h-16 rounded-md overflow-hidden flex-shrink-0 bg-secondary/20">
+                            <img 
+                              src={item.product.node.images.edges[0].node.url} 
+                              alt={item.product.node.title}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        )}
+
                         {/* Product info */}
-                        <div className="flex-1">
-                          <h3 className="font-display font-semibold text-foreground mb-1">
-                            {item.product.name}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-display font-semibold text-foreground mb-1 truncate">
+                            {item.product.node.title}
                           </h3>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            {item.selectedOptions.map(o => o.value).join(' • ')}
+                          </p>
                           <p className="text-sm text-muted-foreground mb-2">
-                            {formatPrice(item.product.price)}
-                            {item.product.isSubscription && `/${item.product.subscriptionInterval}`}
+                            {formatPrice(item.price.amount, item.price.currencyCode)}
                           </p>
                           
                           {/* Quantity controls */}
@@ -83,7 +128,8 @@ export default function CartDrawer() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
+                              onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                              disabled={isLoading}
                               aria-label="Decrease quantity"
                             >
                               <Minus className="w-4 h-4" />
@@ -95,7 +141,8 @@ export default function CartDrawer() {
                               variant="ghost"
                               size="icon"
                               className="h-8 w-8"
-                              onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
+                              onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                              disabled={isLoading}
                               aria-label="Increase quantity"
                             >
                               <Plus className="w-4 h-4" />
@@ -107,8 +154,9 @@ export default function CartDrawer() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => removeFromCart(item.product.id)}
-                          className="text-muted-foreground hover:text-destructive"
+                          onClick={() => removeItem(item.variantId)}
+                          disabled={isLoading}
+                          className="text-muted-foreground hover:text-destructive flex-shrink-0"
                           aria-label="Remove from cart"
                         >
                           <Trash2 className="w-5 h-5" />
@@ -126,7 +174,7 @@ export default function CartDrawer() {
                   <div className="flex items-center justify-between">
                     <span className="text-muted-foreground">Total</span>
                     <span className="font-display text-2xl font-bold">
-                      {formatPrice(totalPrice)}
+                      {currencyCode} {total.toFixed(2)}
                     </span>
                   </div>
 
@@ -134,8 +182,17 @@ export default function CartDrawer() {
                   <Button
                     className="w-full uppercase tracking-[0.2em] font-display"
                     size="lg"
+                    onClick={handleCheckout}
+                    disabled={isLoading || isSyncing || !getCheckoutUrl()}
                   >
-                    Proceed to Checkout
+                    {isLoading || isSyncing ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <>
+                        <ExternalLink className="w-4 h-4 mr-2" />
+                        Checkout with Shopify
+                      </>
+                    )}
                   </Button>
 
                   {/* Clear cart */}
@@ -143,6 +200,7 @@ export default function CartDrawer() {
                     variant="ghost"
                     className="w-full"
                     onClick={clearCart}
+                    disabled={isLoading}
                   >
                     Clear Cart
                   </Button>
