@@ -6,15 +6,12 @@ import LetsTalkModal from "@/components/lets-talk/LetsTalkModal";
 import ShopModal from "@/components/ShopModal";
 import VibeCodeModal from "@/components/VibeCodeModal";
 import CartDrawer from "@/components/CartDrawer";
-import { useCartSync } from "@/hooks/useCartSync";
+import { CartProvider } from "@/contexts/CartContext";
 
-export default function Index() {
+function IndexContent() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
   const [isVibeCodeOpen, setIsVibeCodeOpen] = useState(false);
-
-  // Sync cart with Shopify on page load and visibility change
-  useCartSync();
 
   return (
     <motion.div
@@ -46,3 +43,13 @@ export default function Index() {
     </motion.div>
   );
 }
+
+const Index = () => {
+  return (
+    <CartProvider>
+      <IndexContent />
+    </CartProvider>
+  );
+};
+
+export default Index;

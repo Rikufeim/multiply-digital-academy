@@ -1,16 +1,42 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ShoppingBag, Loader2 } from "lucide-react";
-import ShopifyProductCard from "./ShopifyProductCard";
+import { X } from "lucide-react";
+import { useState } from "react";
+import { courses, guides, bundles, memberships } from "@/data/products";
+import ProductCard from "./ProductCard";
 import { Button } from "@/components/ui/button";
-import { useShopifyProducts } from "@/hooks/useShopifyProducts";
 
 interface ShopModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
+type Category = "all" | "courses" | "guides" | "bundles" | "memberships";
+
+const categories: { id: Category; label: string }[] = [
+  { id: "all", label: "All Products" },
+  { id: "courses", label: "Courses" },
+  { id: "guides", label: "PDF Guides" },
+  { id: "bundles", label: "Bundles" },
+  { id: "memberships", label: "Membership" },
+];
+
 export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
-  const { products, isLoading, error } = useShopifyProducts(50);
+  const [activeCategory, setActiveCategory] = useState<Category>("all");
+
+  const getProducts = () => {
+    switch (activeCategory) {
+      case "courses":
+        return courses;
+      case "guides":
+        return guides;
+      case "bundles":
+        return bundles;
+      case "memberships":
+        return memberships;
+      default:
+        return [...courses, ...guides, ...bundles, ...memberships];
+    }
+  };
 
   return (
     <AnimatePresence>
@@ -67,41 +93,32 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
                   </motion.p>
                 </div>
 
-                {/* Loading state */}
-                {isLoading && (
-                  <div className="flex flex-col items-center justify-center py-20">
-                    <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-                    <p className="text-muted-foreground">Loading products...</p>
-                  </div>
-                )}
-
-                {/* Error state */}
-                {error && (
-                  <div className="text-center py-20">
-                    <p className="text-destructive mb-4">{error}</p>
-                  </div>
-                )}
-
-                {/* Empty state */}
-                {!isLoading && !error && products.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-20">
-                    <ShoppingBag className="w-16 h-16 text-muted-foreground mb-4" />
-                    <h3 className="font-display text-xl font-bold mb-2">No products found</h3>
-                    <p className="text-muted-foreground text-center max-w-md">
-                      Your store doesn't have any products yet. 
-                      Tell us what products you'd like to sell!
-                    </p>
-                  </div>
-                )}
+                {/* Category tabs */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex flex-wrap justify-center gap-3 mb-10"
+                >
+                  {categories.map((category) => (
+                    <Button
+                      key={category.id}
+                      variant={activeCategory === category.id ? "default" : "outline"}
+                      size="sm"
+                      onClick={() => setActiveCategory(category.id)}
+                      className="uppercase tracking-[0.2em] font-display"
+                    >
+                      {category.label}
+                    </Button>
+                  ))}
+                </motion.div>
 
                 {/* Products grid */}
-                {!isLoading && !error && products.length > 0 && (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-10">
-                    {products.map((product, index) => (
-                      <ShopifyProductCard key={product.node.id} product={product} index={index} />
-                    ))}
-                  </div>
-                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-10">
+                  {getProducts().map((product, index) => (
+                    <ProductCard key={product.id} product={product} index={index} />
+                  ))}
+                </div>
               </div>
             </div>
           </motion.div>
