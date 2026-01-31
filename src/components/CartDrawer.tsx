@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { Button } from "@/components/ui/button";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
@@ -33,15 +34,17 @@ export default function CartDrawer() {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b border-border">
-                <h2 className="font-display text-xl font-bold uppercase tracking-luxury">
+                <h2 className="font-display text-xl font-bold uppercase tracking-[0.2em]">
                   Your Cart
                 </h2>
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={closeCart}
-                  className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Close cart"
                 >
                   <X className="w-5 h-5" />
-                </button>
+                </Button>
               </div>
 
               {/* Cart items */}
@@ -76,31 +79,40 @@ export default function CartDrawer() {
                           
                           {/* Quantity controls */}
                           <div className="flex items-center gap-2">
-                            <button
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
                               onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                              className="p-1 rounded bg-muted hover:bg-primary/20 transition-colors"
+                              aria-label="Decrease quantity"
                             >
                               <Minus className="w-4 h-4" />
-                            </button>
+                            </Button>
                             <span className="w-8 text-center text-sm font-medium">
                               {item.quantity}
                             </span>
-                            <button
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
                               onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                              className="p-1 rounded bg-muted hover:bg-primary/20 transition-colors"
+                              aria-label="Increase quantity"
                             >
                               <Plus className="w-4 h-4" />
-                            </button>
+                            </Button>
                           </div>
                         </div>
 
                         {/* Remove button */}
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => removeFromCart(item.product.id)}
-                          className="p-2 text-muted-foreground hover:text-destructive transition-colors"
+                          className="text-muted-foreground hover:text-destructive"
+                          aria-label="Remove from cart"
                         >
                           <Trash2 className="w-5 h-5" />
-                        </button>
+                        </Button>
                       </motion.div>
                     ))}
                   </div>
@@ -119,23 +131,21 @@ export default function CartDrawer() {
                   </div>
 
                   {/* Checkout button */}
-                  <button
-                    className="w-full py-4 bg-primary text-primary-foreground rounded-full
-                               font-display uppercase tracking-luxury text-sm
-                               transition-all duration-300 glow-purple
-                               hover:glow-purple-lg"
+                  <Button
+                    className="w-full uppercase tracking-[0.2em] font-display"
+                    size="lg"
                   >
                     Proceed to Checkout
-                  </button>
+                  </Button>
 
                   {/* Clear cart */}
-                  <button
+                  <Button
+                    variant="ghost"
+                    className="w-full"
                     onClick={clearCart}
-                    className="w-full py-3 text-muted-foreground text-sm
-                               hover:text-foreground transition-colors"
                   >
                     Clear Cart
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>

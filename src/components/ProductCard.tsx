@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Product } from "@/types/product";
 import { useCart } from "@/contexts/CartContext";
 import { Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
   product: Product;
@@ -24,19 +25,19 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
       className="group relative bg-card rounded-xl p-6 border border-border
-                 transition-all duration-300 hover:border-glow"
+                 transition-all duration-300 hover:border-white/25"
     >
       {/* Category badge */}
       <div className="absolute top-4 right-4">
-        <span className="px-3 py-1 text-xs uppercase tracking-luxury font-display
-                         bg-primary/20 text-primary rounded-full">
+        <span className="px-3 py-1 text-xs uppercase tracking-[0.2em] font-display
+                         bg-white/10 text-white/80 rounded-full border border-white/15">
           {product.category}
         </span>
       </div>
 
       {/* Product info */}
       <div className="mb-6">
-        <h3 className="font-display text-xl font-bold mb-2 text-foreground group-hover:text-primary transition-colors">
+        <h3 className="font-display text-xl font-bold mb-2 text-foreground group-hover:text-white transition-colors">
           {product.name}
         </h3>
         <p className="text-muted-foreground text-sm leading-relaxed">
@@ -49,7 +50,7 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
         <ul className="space-y-2 mb-6">
           {product.features.map((feature, i) => (
             <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4 text-primary flex-shrink-0" />
+              <Check className="w-4 h-4 text-white/70 flex-shrink-0" />
               <span>{feature}</span>
             </li>
           ))}
@@ -61,15 +62,13 @@ export default function ProductCard({ product, index = 0 }: ProductCardProps) {
         <span className="font-display text-2xl font-bold text-foreground">
           {formatPrice(product.price, product.isSubscription, product.subscriptionInterval)}
         </span>
-        <button
+        <Button
           onClick={() => addToCart(product)}
-          className="px-6 py-2.5 bg-primary text-primary-foreground rounded-full
-                     font-display text-sm uppercase tracking-luxury
-                     transition-all duration-300 glow-purple-sm
-                     hover:glow-purple hover:scale-105"
+          size="sm"
+          className="uppercase tracking-[0.2em] font-display"
         >
           Buy Now
-        </button>
+        </Button>
       </div>
     </motion.div>
   );

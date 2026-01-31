@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { courses } from "@/data/products";
 import ProductCard from "./ProductCard";
+import { Button } from "@/components/ui/button";
 
 interface CoursesModalProps {
   isOpen: boolean;
@@ -34,13 +35,15 @@ export default function CoursesModal({ isOpen, onClose }: CoursesModalProps) {
             <div className="min-h-full flex items-start justify-center p-6 pt-20">
               <div className="relative w-full max-w-5xl">
                 {/* Close button */}
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={onClose}
-                  className="absolute -top-12 right-0 p-2 text-muted-foreground 
-                             hover:text-foreground transition-colors"
+                  className="absolute -top-12 right-0"
+                  aria-label="Close"
                 >
                   <X className="w-6 h-6" />
-                </button>
+                </Button>
 
                 {/* Header */}
                 <div className="text-center mb-12">

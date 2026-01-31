@@ -18,9 +18,18 @@ export default {
         display: ["Space Grotesk", "sans-serif"],
       },
       colors: {
-        border: "hsl(var(--border))",
+        main: "var(--main)",
+        overlay: "var(--overlay)",
+        bg: "var(--bg)",
+        bw: "var(--bw)",
+        blank: "var(--blank)",
+        text: "var(--text)",
+        mtext: "var(--mtext)",
+        ringOffset: "var(--ring-offset)",
+        secondaryBlack: "#212121",
+        border: "var(--border)",
         input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        ring: "var(--ring)",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
@@ -67,9 +76,23 @@ export default {
         },
       },
       borderRadius: {
+        base: "5px",
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        shadow: "var(--shadow)",
+      },
+      translate: {
+        boxShadowX: "4px",
+        boxShadowY: "4px",
+        reverseBoxShadowX: "-4px",
+        reverseBoxShadowY: "-4px",
+      },
+      fontWeight: {
+        base: "500",
+        heading: "700",
       },
       keyframes: {
         "accordion-down": {

@@ -1,43 +1,42 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import Hero3D from "@/components/Hero3D";
+import CometCardDemo from "@/components/comet-card-demo";
 import Header from "@/components/Header";
-import HeroContent from "@/components/HeroContent";
-import CoursesModal from "@/components/CoursesModal";
+import LetsTalkModal from "@/components/lets-talk/LetsTalkModal";
 import ShopModal from "@/components/ShopModal";
+import VibeCodeModal from "@/components/VibeCodeModal";
 import CartDrawer from "@/components/CartDrawer";
 import { CartProvider } from "@/contexts/CartContext";
 
 function IndexContent() {
-  const [isCoursesOpen, setIsCoursesOpen] = useState(false);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const [isShopOpen, setIsShopOpen] = useState(false);
+  const [isVibeCodeOpen, setIsVibeCodeOpen] = useState(false);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="relative min-h-screen bg-background overflow-hidden"
+      className="relative min-h-screen bg-black overflow-hidden"
     >
-      {/* Background gradient layers */}
-      <div className="fixed inset-0 bg-gradient-dark" />
-      <div className="fixed inset-0 fog-overlay" />
-      
-      {/* 3D Hero */}
-      <Hero3D />
       
       {/* Header */}
       <Header 
-        onOpenCourses={() => setIsCoursesOpen(true)} 
-        onOpenShop={() => setIsShopOpen(true)} 
+        onOpenContact={() => setIsContactOpen(true)}
+        onOpenShop={() => setIsShopOpen(true)}
+        onOpenVibeCode={() => setIsVibeCodeOpen(true)}
       />
       
       {/* Hero Content */}
-      <HeroContent />
+      <div className="flex min-h-screen items-center justify-center">
+        <CometCardDemo />
+      </div>
       
       {/* Modals */}
-      <CoursesModal isOpen={isCoursesOpen} onClose={() => setIsCoursesOpen(false)} />
+      <LetsTalkModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
       <ShopModal isOpen={isShopOpen} onClose={() => setIsShopOpen(false)} />
+      <VibeCodeModal isOpen={isVibeCodeOpen} onClose={() => setIsVibeCodeOpen(false)} />
       
       {/* Cart Drawer */}
       <CartDrawer />

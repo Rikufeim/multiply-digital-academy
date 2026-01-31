@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { useState } from "react";
 import { courses, guides, bundles, memberships } from "@/data/products";
 import ProductCard from "./ProductCard";
+import { Button } from "@/components/ui/button";
 
 interface ShopModalProps {
   isOpen: boolean;
@@ -62,13 +63,15 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
             <div className="min-h-full flex items-start justify-center p-6 pt-20">
               <div className="relative w-full max-w-6xl">
                 {/* Close button */}
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={onClose}
-                  className="absolute -top-12 right-0 p-2 text-muted-foreground 
-                             hover:text-foreground transition-colors"
+                  className="absolute -top-12 right-0"
+                  aria-label="Close"
                 >
                   <X className="w-6 h-6" />
-                </button>
+                </Button>
 
                 {/* Header */}
                 <div className="text-center mb-8">
@@ -98,18 +101,15 @@ export default function ShopModal({ isOpen, onClose }: ShopModalProps) {
                   className="flex flex-wrap justify-center gap-3 mb-10"
                 >
                   {categories.map((category) => (
-                    <button
+                    <Button
                       key={category.id}
+                      variant={activeCategory === category.id ? "default" : "outline"}
+                      size="sm"
                       onClick={() => setActiveCategory(category.id)}
-                      className={`px-5 py-2 rounded-full text-sm font-display uppercase tracking-luxury
-                                  transition-all duration-300
-                                  ${activeCategory === category.id
-                                    ? "bg-primary text-primary-foreground glow-purple-sm"
-                                    : "border border-border text-muted-foreground hover:border-primary hover:text-primary"
-                                  }`}
+                      className="uppercase tracking-[0.2em] font-display"
                     >
                       {category.label}
-                    </button>
+                    </Button>
                   ))}
                 </motion.div>
 

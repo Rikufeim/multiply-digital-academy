@@ -85,6 +85,45 @@
 }
 
 @layer base {
+  :root {
+    --main: #000;
+    --overlay: rgba(0, 0, 0, 0.8);
+
+    --bg: #dfe5f2;
+    --bw: #fff;
+    --blank: #000;
+    --border: #000;
+    --text: #000;
+    --mtext: #fff;
+    --ring: #000;
+    --ring-offset: #fff;
+
+    --border-radius: 5px;
+    --box-shadow-x: 4px;
+    --box-shadow-y: 4px;
+    --reverse-box-shadow-x: -4px;
+    --reverse-box-shadow-y: -4px;
+    --base-font-weight: 500;
+    --heading-font-weight: 700;
+
+    --shadow: var(--box-shadow-x) var(--box-shadow-y) 0px 0px var(--border);
+  }
+
+  .dark {
+    --bg: #272933;
+    --bw: #212121;
+    --blank: #fff;
+    --border: #000;
+    --text: #e6e6e6;
+    --mtext: #000;
+    --ring: #fff;
+    --ring-offset: #000;
+
+    --shadow: var(--box-shadow-x) var(--box-shadow-y) 0px 0px var(--border);
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
   }
@@ -104,6 +143,14 @@
 }
 
 @layer utilities {
+  .perspective-distant {
+    perspective: 1000px;
+  }
+
+  .transform-3d {
+    transform-style: preserve-3d;
+  }
+
   /* Purple glow effects */
   .glow-purple {
     box-shadow: 0 0 20px hsl(var(--primary) / 0.4),
